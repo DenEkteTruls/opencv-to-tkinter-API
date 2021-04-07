@@ -13,7 +13,6 @@ from PIL import Image, ImageTk
 from time import time, sleep
 from functools import lru_cache
 
-
 class CameraHandler():
 
     def __init__(self, camIndex):
@@ -37,6 +36,7 @@ class CameraHandler():
         threading._start_new_thread(self.read_cap, (0,))
         threading._start_new_thread(self.read_cap, (1,))
 
+        
     def read_cap(self, camIndex):
 
         c = 0
@@ -92,10 +92,6 @@ class CameraHandler():
         self.running = False
 
 
-
-
-
-
 class Graphics():
 
     def __init__(self, title: str) -> None:
@@ -128,12 +124,10 @@ class Graphics():
     def frame_surface(self, side):
 
         a = tk.Label(self.root)
-        
         if side == "left":
             a.pack(side=tk.LEFT)
         elif side == "right":
             a.pack(side=tk.RIGHT)
-
         return a
     
 
