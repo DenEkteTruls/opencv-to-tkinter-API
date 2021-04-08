@@ -13,6 +13,7 @@ from PIL import Image, ImageTk
 from time import time, sleep
 from functools import lru_cache
 
+
 class CameraHandler():
 
     def __init__(self, camIndex):
@@ -27,7 +28,9 @@ class CameraHandler():
         self.running = True
 
         self.frame0line = 0
+        self.frame0lineXY = (0, 0)
         self.frame1line = 0
+        self.frame1lineXY = (0, 0)
 
         self.active_mouse = -1
         self.mouse0 = (0, 0)
@@ -36,7 +39,7 @@ class CameraHandler():
         threading._start_new_thread(self.read_cap, (0,))
         threading._start_new_thread(self.read_cap, (1,))
 
-        
+
     def read_cap(self, camIndex):
 
         c = 0
@@ -53,19 +56,20 @@ class CameraHandler():
                 tmp_img = cv2.resize(cv2.cvtColor(self.cap0.read()[1], cv2.COLOR_BGR2RGB), self.capsize)
                 cv2.circle(tmp_img, (int(self.capsize[0]/2), int(self.capsize[1]/2)), 3, (255, 0, 100), 3)
                 if self.active_mouse == 0:
-                    self.frame0line = np.sqrt((int(self.capsize[0]/2)-self.mouse0[0])**2+(int(self.capsize[1]/2)-self.mouse0[1])**2)
+                    self.frame0lineXY = (int(self.capsize[0]/2)-self.mouse0[0], int(self.capsize[1]/2)-self.mouse0[1])
+                    self.frame0line = np.sqrt(self.frame0lineXY[0]**2+self.frame0lineXY[1]**2)
                     cv2.line(tmp_img, (int(self.capsize[0]/2), int(self.capsize[1]/2)), self.mouse0, (0, 150, 250), 2)    
-                    cv2.putText(tmp_img, str(int(self.frame0line)), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+                    cv2.putText(tmp_img, f"X:{-self.frame0lineXY[0]}, Y:{self.frame0lineXY[1]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
                 self.frame0 = ImageTk.PhotoImage(image=Image.fromarray(tmp_img))
 
             elif camIndex == 1:
-
                 tmp_img = cv2.resize(cv2.cvtColor(self.cap1.read()[1], cv2.COLOR_BGR2RGB), self.capsize)
                 cv2.circle(tmp_img, (int(self.capsize[0]/2), int(self.capsize[1]/2)), 3, (255, 0, 100), 3)
                 if self.active_mouse == 1:
-                    self.frame1line = np.sqrt((int(self.capsize[0]/2)-self.mouse1[0])**2+(int(self.capsize[1]/2)-self.mouse1[1])**2)
+                    self.frame1lineXY = (int(self.capsize[0]/2)-self.mouse1[0], int(self.capsize[1]/2)-self.mouse1[1])
+                    self.frame1line = np.sqrt(self.frame1lineXY[0]**2+self.frame1lineXY[1]**2)
                     cv2.line(tmp_img, (int(self.capsize[0]/2), int(self.capsize[1]/2)), self.mouse1, (0, 150, 250), 2)
-                    cv2.putText(tmp_img, str(int(self.frame1line)), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA) 
+                    cv2.putText(tmp_img, f"X:{-self.frame1lineXY[0]}, Y:{self.frame1lineXY[1]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA) 
                 self.frame1 = ImageTk.PhotoImage(image=Image.fromarray(tmp_img))
 
 
